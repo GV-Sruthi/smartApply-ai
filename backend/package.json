@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-loader-spinner": "^8.0.2",
+    "react-markdown": "^10.1.0"
+  }
+}
