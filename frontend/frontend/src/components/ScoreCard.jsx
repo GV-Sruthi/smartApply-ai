@@ -1,23 +1,26 @@
-function ScoreCard() {
-  return (
-    <div className="grid grid-cols-2 gap-4 mt-8">
+export default function ScoreCard({
+    title,
+    score,
+}){
 
-      <div className="bg-white shadow rounded-xl p-6">
-        <h2>Match Score</h2>
+    return(
 
-        <p className="text-4xl font-bold">
-          82%
-        </p>
-      </div>
+        <div className="bg-white rounded-3xl shadow-xl p-8">
 
-      <div className="bg-white shadow rounded-xl p-6">
-        <h2>ATS Score</h2>
+            <h2 className="text-xl font-bold">
 
-        <p className="text-4xl font-bold">
-          75%
-        </p>
-      </div>
+                {title}
 
-    </div>
-  );
+            </h2>
+
+            <p className="text-6xl font-bold text-blue-600 mt-5">
+
+                {score}%
+
+            </p>
+
+        </div>
+
+    )
+
 }

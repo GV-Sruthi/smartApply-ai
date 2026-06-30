@@ -1,4 +1,5 @@
 function RoastCard() {
+  if (!analysis) return null;
   return (
     <div className="bg-yellow-100 p-6 rounded-xl mt-6">
 

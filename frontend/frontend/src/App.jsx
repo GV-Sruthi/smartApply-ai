@@ -1,7 +1,15 @@
 import { useState, useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import { TailSpin } from "react-loader-spinner";
-
+import UploadCard from "./components/UploadCard";
+import JDCard from "./components/JDCard";
+import Loading from "./components/Loading";
+import ScoreCard from "./components/ScoreCard";
+import SkillList from "./components/SkillList";
+import ResultCard from "./components/ResultCard";
+import AnalyzeButton from "./components/AnalyzeButton";
+import Tabs from "./components/Tabs";
+import SkillsTab from "./components/SkillsTab";
+import ReviewTab from "./components/ReviewTab";
+import RoastTab from "./components/RoastTab";
 
 function App() {
   const fileInputRef = useRef(null);
@@ -9,6 +17,7 @@ function App() {
   const [jd, setJd] = useState("");
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("skills");
 
 
   const handleAnalyze = async () => {
@@ -70,175 +79,67 @@ function App() {
 
           {/* Resume Upload */}
 
-          <div className="bg-white rounded-3xl shadow-xl p-8">
-
-            <h2 className="text-2xl font-semibold mb-6">
-              Upload Resume
-            </h2>
-
-            <div className="border-2 border-dashed border-gray-300 hover:border-blue-500 rounded-3xl h-80 flex flex-col justify-center items-center transition-all cursor-pointer">
-
-              <div className="text-7xl mb-4">
-                ☁️
-              </div>
-
-              <p className="font-semibold text-lg">
-                Drag & Drop Resume
-              </p>
-
-              <p className="text-gray-500 mt-2">
-                PDF, DOCX supported
-              </p>
-            </div>
-            <div>
-              <input
-                type="file"
-                accept=".pdf,.docx"
-                className="hidden"
-                ref={fileInputRef}
-                onChange={(e) => {
-                   setResume(e.target.files[0]);
-                }}
-              />
-              <button className="mt-6 bg-black text-white px-6 py-3 rounded-xl"
-        onClick={() => fileInputRef.current.click()}>
-                Browse Files
-              </button>
-              {resume && (
-                <p className="mt-4 text-green-600 font-medium">
-                  ✅ {resume.name}
-                </p>
-              )}
-
-            </div>
-
-          </div>
+          <UploadCard
+            resume={resume}
+            setResume={setResume}
+            fileInputRef={fileInputRef}
+          />
 
           {/* JD Section */}
 
-          <div className="bg-white rounded-3xl shadow-xl p-8">
-
-            <h2 className="text-2xl font-semibold mb-6">
-              Job Description
-            </h2>
-
-            <textarea
-              className="w-full h-80 border border-gray-300 rounded-2xl p-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Paste Job Description Here..."  value={jd}
-              onChange={(e) => setJd(e.target.value)}
-            />
-
-          </div>
+          <JDCard
+            jd={jd}
+            setJd={setJd}
+          />
 
         </div>
 
-        <div className="flex justify-center mt-10">
-
-          <button onClick={handleAnalyze} className="bg-black hover:scale-105 transition text-white px-10 py-4 rounded-2xl text-lg font-semibold shadow-lg">
-            Analyze Resume
-          </button>
-
-        </div>
-
-        {loading && (
-          <div className="flex justify-center items-center gap-3 mt-4">
-            <TailSpin
-              height={30}
-              width={30}
+        {!loading && (
+            <AnalyzeButton
+                onClick={handleAnalyze}
+                loading={loading}
             />
-            <span className="font-medium text-blue-600">
-              Analyzing Resume...
-            </span>
-          </div>
         )}
+
+        {loading && <Loading />}
 
         {analysis && (
-          <div className="mt-10">
 
-            <div className="grid md:grid-cols-2 gap-6">
+        <div className="mt-10">
+          <div className="grid md:grid-cols-2 gap-6">
 
-              <div className="bg-white p-6 rounded-3xl shadow-xl">
-                <h3 className="text-xl font-bold">
-                  ATS Score
-                </h3>
+            <ScoreCard
+                title="ATS Score"
+                score={analysis.ats_score}
+            />
 
-                <p className="text-5xl mt-4">
-                  {analysis.ats_score}%
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl shadow-xl">
-                <h3 className="text-xl font-bold">
-                  Match Score
-                </h3>
-
-                <p className="text-5xl mt-4">
-                  {analysis.match_score}%
-                </p>
-              </div>
-
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 mt-6">
-
-              <div className="bg-white p-6 rounded-3xl shadow-xl">
-                <h3 className="text-xl font-bold mb-4">
-                  Missing Skills
-                </h3>
-
-                <ul>
-                  {analysis.missing_skills.map((skill, index) => (
-                    <li key={index}>
-                      ❌ {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl shadow-xl">
-                <h3 className="text-xl font-bold mb-4">
-                  Matching Skills
-                </h3>
-
-                <ul>
-                  {analysis.matching_skills.map((skill, index) => (
-                    <li key={index}>
-                      ✅ {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-            </div>
-
-            <div className="bg-white p-6 rounded-3xl shadow-xl mt-6">
-
-              <h3 className="text-xl font-bold mb-4">
-                Recommendation
-              </h3>
-
-              <p>
-                {analysis.recommendation}
-              </p>
-
-            </div>
-
-            <div className="bg-white p-6 rounded-3xl shadow-xl mt-6">
-
-              <h3 className="text-xl font-bold mb-4">
-                
-              </h3>
-
-              <div className="prose max-w-none">
-                <ReactMarkdown>
-                  {analysis.resume_roast}
-                </ReactMarkdown>
-              </div>
-
-            </div>
+            <ScoreCard
+                title="Match Score"
+                score={analysis.match_score}
+            />
 
           </div>
-        )}
+
+          <Tabs
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+          />
+
+          {activeTab==="skills" && (
+              <SkillsTab analysis={analysis}/>
+          )}
+
+          {activeTab==="review" && (
+              <ReviewTab analysis={analysis}/>
+          )}
+
+          {activeTab==="roast" && (
+              <RoastTab analysis={analysis}/>
+          )}
+
+        </div>
+
+    )}
 
       </div>
 
